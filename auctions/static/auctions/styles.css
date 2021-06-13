@@ -1,0 +1,20 @@
+body {
+    padding: 10px;
+}
+
+label, input, select {
+    display: block;
+    margin: 10px;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+.list-img {
+    height: calc(100% - 0.5rem);
+    background-position: center;
+    background-size: cover;
+}

@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create Listing</h2>
+    
+    {% if message %}
+        <div >{{ message }}</div>
+    {% endif %}
+    <style>
+        .fieldWrapper input {
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .fieldWrapper input {
+            width: 75%;
+            }
+        }
+        .fieldWrapper ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .fieldWrapper ul label {
+            display: flex;
+
+        }
+        .fieldWrapper ul label input {
+            width: auto;
+            
+        }
+    </style>
+    <form action="{% url 'create_listing' %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <input class="btn btn-primary" type="submit" value="Create Listing">
+    </form>
+    
+{% endblock %}

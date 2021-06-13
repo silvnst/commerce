@@ -1,0 +1,154 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if not listing.active %}
+        <div class="alert alert-warning" role="alert">
+            This listing is deactivated.
+            {% if latest_bid.user %}
+            User <b>{{ latest_bid.user }}</b> won the auction!
+            {% endif %}
+        </div>
+    {% endif %}
+    {% if message_warning %}
+        <div class="alert alert-warning" role="alert">
+            {{ message_warning }}
+        </div>
+    {% endif %}
+
+    {% if message_success %}
+        <div class="alert alert-success" role="alert">
+            {{ message_success }}
+        </div>
+    {% endif %}
+    <div class="row">
+        <h2 class="pt-3">Listing: {{ listing.title }}</h2>
+        
+        {% if listing.url %}
+        <div class="col-sm-4">
+            <img class="img-fluid" src="{{ listing.url }}" alt="Listing Image">
+        </div>
+        {% endif %}
+        <div class="col-sm-8">
+            
+            {% if user.is_authenticated %}
+            <form action="{% url 'listing' listing.id %}" method="post">
+        
+                {% csrf_token %}
+                
+                <input type="hidden" name="post_id" value="bid">
+
+                {{ bid_form }}
+                
+                <input class="btn btn-primary" type="submit" value="Bid">
+            
+            </form>
+
+            {% else %}
+
+            <p>You have to be <a href="{% url 'login' %}">logged in</a> to bid.</p>
+
+            {% endif %}
+
+            <br><br>
+            <p>Current price: {{ max_bid }} CHF</p>
+
+            {% if user.is_authenticated %}
+
+            <hr>
+
+            <form action="{% url 'watchlist' listing.id %}" method="post" id="watchlist" class="row">
+                {% csrf_token %}
+                <div class="col-auto">
+                    <label class="col-form-label">You can add this article to your watchlist:</label>
+                </div>
+                <div class="col-auto">
+                    
+
+                    <button class="btn {% if watchlist %} btn-success {% else %} btn-secondary {% endif %} d-flex align-items-center" type="submit">
+                        <span class="material-icons" style="margin-right: 5px;">visibility</span>
+                        <span>Watchlist</span>
+                    </button>
+                    
+                </div>
+            </form>
+
+            {% endif %}
+
+            <label class="form-text">Currently watching: {{ listing.watch_count }}</label>
+
+            {% if request.user == listing.creator %}
+
+            <hr>
+
+            <form action="{% url 'deactivate_listing' listing.id %}" method="post" id="deactivate">
+                {% csrf_token %}
+                
+                <label class="form-label">This is your article. This is why you can close this auction with the following button.</label>
+
+                {% if listing.active %}
+                <input class="btn btn-primary" type="submit" value="Close Auction">
+                
+                {% else %}
+                <input class="btn btn-primary" type="submit" value="Reopen Auction">
+
+                {% endif %}
+            </form>
+
+            {% endif %}
+        
+    </div>
+    <div class="col-12">
+        <h3>Details</h3>
+            
+        <p> {{ listing.desc }} </p>
+            
+        <h3>Comments</h3>
+
+        {% for comment in comments %}
+
+        <div class="row">
+            <div class="col-12 rounded bg-light my-3">
+                <small class="text-muted">{{ comment.user }} - {{ comment.time }}</small>
+                <p>{{ comment.text }}</p>
+            </div>
+        </div>
+        {% empty %}
+
+        <p>No comments yet.</p>        
+
+        {% endfor %}
+
+        <h3>Categories</h3>
+
+        {% for l in listing.category.all %}
+            
+        <span class="badge rounded-pill bg-info text-dark">{{ l.category_name }}</span>
+        
+        {% empty %}
+        
+        <span>No categories.</span>
+        
+        {% endfor %}
+
+        <h4 class="pt-3">Add Comment</h4>
+
+        {% if user.is_authenticated %}
+
+        <form action="{% url 'comment' listing.id %}" method="POST">
+            {% csrf_token %}
+
+            {{ comment_form }}
+
+            <input type="submit" value="Comment">
+        </form>
+
+        {% else %}
+
+        <p>You have to be <a href="{% url 'login' %}">logged in</a> to comment.</p>
+
+        {% endif %}
+
+        </div>
+    </div>
+    
+{% endblock %}

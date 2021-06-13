@@ -1,0 +1,47 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <div class="row" data-masonry='{"percentPosition": true }'>
+      {% for listing in active_listings %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card mb-3 {% if listing.creator == request.user %} bg-light {% endif %}">
+          <div class="row g-0">
+              
+          {% if listing.url %}
+            <div class="col-4">
+              <img class="img-fluid p-1 rounded" src="{{ listing.url }}" alt="Listing Image">
+            </div>
+          {% endif %}
+  
+            <div class="col-8">
+              <div class="card-body h-100 d-flex flex-column justify-content-between">
+                <h5 class="card-title">{{ listing.title }}</h5>
+                <p class="card-text line-clamp-3">{{ listing.desc }}</p>
+                <p class="card-text"><small class="text-muted">Started at bid: {{ listing.starting_bid }} </small></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <span>Categories:</span>
+            {% for l in listing.category.all %}
+            <span class="badge rounded-pill bg-info text-dark">{{ l.category_name }}</span>
+            {% empty %}
+            <span>No categories.</span>
+            {% endfor %}
+          </div>
+          
+          <a class="stretched-link" href="{% url 'listing' listing.id %}"></a>
+        </div>
+      </div>
+    
+    {% empty %}
+
+     <p>No Listings available.</p>
+
+    {% endfor %}
+    </div>
+    
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categories</h2>
+    
+    {% if message %}
+
+        <div >{{ message }}</div>
+
+    {% endif %}
+
+
+    {% for category in categories %}
+
+    <div class="row my-3 position-relative">
+        <div class="col-8 bg-light rounded d-flex align-items-center" style="min-height: 5em;">
+            {{ category.category_name }}
+        </div>
+        <a class="stretched-link" href="{% url 'cateogries_single' category.id %}"></a>
+    </div>
+
+    {% endfor %}
+    
+{% endblock %}
