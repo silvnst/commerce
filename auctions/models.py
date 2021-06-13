@@ -23,7 +23,7 @@ class Listing(models.Model):
     desc = models.CharField(max_length=512)
     starting_bid = models.FloatField(validators=[MinValueValidator(0)])
     url = models.URLField(blank=True)
-    category = models.ManyToManyField(Category, related_name="category_items" , blank=True, null=True)
+    category = models.ManyToManyField(Category, related_name="category_items" , blank=True)
     active = models.BooleanField(default=True)
     watchlist = models.ManyToManyField(User, related_name="watch_list", blank=True)
 
